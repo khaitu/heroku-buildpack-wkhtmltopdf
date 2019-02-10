@@ -12,9 +12,8 @@ EXTRACTED_DATA_TAR="$(pwd)/data.tar.xz"
 WKHTMLTOPDF_PATH=$CACHE_DIR/usr/local
 DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
 
-
-# Download and extract wkhtmltopdf and libpng12 dependency
-if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
+# Download and install libpng12 dependency
+if ! dpkg -s libpng12 > /dev/null 2>&1; then
 	echo '-----> Downloading libpng12'
 	mkdir -p $(dirname $LIBPNG_FILENAME)
 	wget --quiet --continue --output-document="$LIBPNG_FILENAME" "$LIBPNG_URL"
@@ -22,7 +21,10 @@ if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 	echo '-----> Installing libpng12'
 	dpkg -i $LIBPNG_FILENAME
 	rm $LIBPNG_FILENAME
+fi
 
+# Download and extract wkhtmltopdf
+if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 	echo '-----> Downloading wkhtmltopdf'
 	mkdir -p $(dirname $DEB_FILENAME)
 	wget --quiet --continue --output-document="$DEB_FILENAME" "$WKHTMLTOPDF_URL"
