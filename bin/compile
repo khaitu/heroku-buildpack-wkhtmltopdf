@@ -45,6 +45,11 @@ fi
 # Move files to /usr/lib
 if [ ! -f "$LIBPNG_DESTINATION/libpng12.so.0" ]; then
 	echo '-----> Moving libpng12 library into place'
+	
+	if [ ! -d "$LIBPNG_DESTINATION" ]; then
+		mkdir -p "$LIBPNG_DESTINATION"
+	fi
+	
 	cp $LIBPNG_PATH $LIBPNG_DESTINATION/libpng12.so.0
 	
 	echo '-----> Add library search path /app/lib'
