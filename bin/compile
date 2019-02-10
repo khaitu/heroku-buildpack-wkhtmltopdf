@@ -53,7 +53,7 @@ if [ ! -f "$LIBPNG_DESTINATION/libpng12.so.0" ]; then
 	cp $LIBPNG_PATH $LIBPNG_DESTINATION/libpng12.so.0
 	
 	echo '-----> Add library search path /app/lib'
-	echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBPNG_DESTINATION' > $BUILD_DIR/.profile.d/wkhtmltopdf.sh
+	echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBPNG_DESTINATION" > $BUILD_DIR/.profile.d/wkhtmltopdf.sh
 fi
 
 # Move files to /app/bin
