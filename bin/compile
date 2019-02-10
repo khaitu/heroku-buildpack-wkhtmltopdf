@@ -12,7 +12,7 @@ EXTRACTED_DATA_TAR="$(pwd)/data.tar.xz"
 WKHTMLTOPDF_PATH=$CACHE_DIR/usr/local
 LIBPNG_PATH=$CACHE_DIR/lib/x86_64-linux-gnu/libpng12.so.0.54.0
 WKHTMLTOPDF_DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
-LIBPNG_DESTINATION=/usr/lib/x86_64-linux-gnu/libpng12.so.0
+LIBPNG_DESTINATION=$BUILD_DIR/lib
 
 # Download and install libpng12 dependency
 if ! dpkg -s libpng12 > /dev/null 2>&1; then
@@ -43,9 +43,12 @@ if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 fi
 
 # Move files to /usr/lib
-if [ ! -f "$LIBPNG_DESTINATION" ]; then
+if [ ! -f "$LIBPNG_DESTINATION/libpng12.so.0" ]; then
 	echo '-----> Moving libpng12 library into place'
-	cp $LIBPNG_PATH $LIBPNG_DESTINATION
+	cp $LIBPNG_PATH $LIBPNG_DESTINATION/libpng12.so.0
+	
+	echo '-----> Add library search path /app/lib'
+	echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LIBPNG_DESTINATION' > $BUILD_DIR/.profile.d/wkhtmltopdf.sh
 fi
 
 # Move files to /app/bin
