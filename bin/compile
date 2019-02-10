@@ -25,6 +25,7 @@ if ! dpkg -s libpng12 > /dev/null 2>&1; then
 
 	tar -xvf "$EXTRACTED_DATA_TAR" -C "$CACHE_DIR"
 	rm "$LIBPNG_FILENAME"
+	rm $EXTRACTED_DATA_TAR
 fi
 
 # Download and extract wkhtmltopdf
@@ -38,6 +39,7 @@ if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 
 	tar -xvf "$EXTRACTED_DATA_TAR" -C "$CACHE_DIR"
 	rm "$DEB_FILENAME"
+	rm $EXTRACTED_DATA_TAR
 fi
 
 # Move files to /usr/lib
