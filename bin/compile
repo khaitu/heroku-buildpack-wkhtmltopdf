@@ -10,7 +10,9 @@ DEB_FILENAME=$CACHE_DIR/$(basename $WKHTMLTOPDF_URL)
 LIBPNG_FILENAME=$CACHE_DIR/$(basename $LIBPNG_URL)
 EXTRACTED_DATA_TAR="$(pwd)/data.tar.xz"
 WKHTMLTOPDF_PATH=$CACHE_DIR/usr/local
-DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
+LIBPNG_PATH=$CACHE_DIR/lib/x86_64-linux-gnu/libpng12.so.0.54.0
+WKHTMLTOPDF_DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
+LIBPNG_DESTINATION=/usr/lib/x86_64-linux-gnu/libpng12.so.0
 
 # Download and install libpng12 dependency
 if ! dpkg -s libpng12 > /dev/null 2>&1; then
@@ -18,9 +20,11 @@ if ! dpkg -s libpng12 > /dev/null 2>&1; then
 	mkdir -p $(dirname $LIBPNG_FILENAME)
 	wget --quiet --continue --output-document="$LIBPNG_FILENAME" "$LIBPNG_URL"
 	
-	echo '-----> Installing libpng12'
-	sudo dpkg -i $LIBPNG_FILENAME
-	rm $LIBPNG_FILENAME
+	echo '-----> Extracting libpng12'
+	ar -xv $LIBPNG_FILENAME
+
+	tar -xvf "$EXTRACTED_DATA_TAR" -C "$CACHE_DIR"
+	rm "$LIBPNG_FILENAME"
 fi
 
 # Download and extract wkhtmltopdf
@@ -36,13 +40,19 @@ if [ ! -d "$WKHTMLTOPDF_PATH" ]; then
 	rm "$DEB_FILENAME"
 fi
 
+# Move files to /usr/lib
+if [ ! -f "$LIBPNG_DESTINATION" ]; then
+	echo '-----> Moving libpng12 library into place'
+	cp $LIBPNG_PATH $LIBPNG_DESTINATION
+fi
+
 # Move files to /app/bin
-if [ ! -f "$DESTINATION/wkhtmltopdf" ]; then
+if [ ! -f "$WKHTMLTOPDF_DESTINATION/wkhtmltopdf" ]; then
 	echo '-----> Moving wkhtmltopdf binaries to /app/bin'
 
-	if [ ! -d "$DESTINATION" ]; then
-		mkdir -p "$DESTINATION"
+	if [ ! -d "$WKHTMLTOPDF_DESTINATION" ]; then
+		mkdir -p "$WKHTMLTOPDF_DESTINATION"
 	fi
 
-	cp $WKHTMLTOPDF_PATH/bin/* $DESTINATION
+	cp $WKHTMLTOPDF_PATH/bin/* $WKHTMLTOPDF_DESTINATION
 fi
