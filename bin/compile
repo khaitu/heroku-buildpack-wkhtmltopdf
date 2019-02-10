@@ -19,7 +19,7 @@ if ! dpkg -s libpng12 > /dev/null 2>&1; then
 	wget --quiet --continue --output-document="$LIBPNG_FILENAME" "$LIBPNG_URL"
 	
 	echo '-----> Installing libpng12'
-	dpkg -i $LIBPNG_FILENAME
+	sudo dpkg -i $LIBPNG_FILENAME
 	rm $LIBPNG_FILENAME
 fi
 
