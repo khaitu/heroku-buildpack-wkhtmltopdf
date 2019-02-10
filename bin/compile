@@ -15,7 +15,7 @@ WKHTMLTOPDF_DESTINATION=$BUILD_DIR/bin  # will be `/app/bin` inside dyno
 LIBPNG_DESTINATION=$BUILD_DIR/lib
 
 # Download and install libpng12 dependency
-if ! dpkg -s libpng12 > /dev/null 2>&1; then
+if [ ! -d "$LIBPNG_PATH" ]; then
 	echo '-----> Downloading libpng12'
 	mkdir -p $(dirname $LIBPNG_FILENAME)
 	wget --quiet --continue --output-document="$LIBPNG_FILENAME" "$LIBPNG_URL"
